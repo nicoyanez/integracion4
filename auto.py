@@ -1,9 +1,10 @@
 from PyQt4.QtGui import QGraphicsPixmapItem ,QPixmap ,QAction ,QMenu
+import random
 
 class auto(QGraphicsPixmapItem):
       def __init__(self, *args):
             QGraphicsPixmapItem.__init__(self, *args)
-            self.setPixmap(QPixmap("sprites/1.png"))
+            self.setPixmap(QPixmap("sprites/"+str(random.randint(1,45))+".png"))
 
             self.menu = QMenu()
             self.Actions =[] #arreglo de acciones 
