@@ -24,10 +24,12 @@ class escena(QtGui.QWidget):
             self.view.setScene(self.scene)
             self.view.setGeometry(QtCore.QRect(0, 0, self.rect().width(), self.rect().height()))
 
-            auto1 = auto()
-            auto1.setPos(100.0,150.0)
-            auto1.setRotation(45)
-            self.scene.addItem(auto1)
+            ##
+            self.auto1 = auto()
+            self.auto1.setPos(100.0,150.0)
+            self.auto1.setRotation(45)
+            self.scene.addItem(self.auto1)
+            self.auto1.setTransformOriginPoint(self.auto1.boundingRect().width()/2.0,self.auto1.boundingRect().height()/2.0)
             
             ##toolbar
             self.tb = QtGui.QToolBar("mi br",self)
@@ -68,3 +70,11 @@ class escena(QtGui.QWidget):
           pen = QtGui.QPen(QtGui.QColor(255, 0, 0), 5, QtCore.Qt.SolidLine)
           qp.setPen(pen)
           #self.scene.update(0,0,self.rect().width(),self.rect().height())
+      def keyPressEvent(self,event):
+            k = event.key()
+            #print "la tecla es ",k
+            if k == 65:
+                  self.auto1.setRotation(self.auto1.rotation()-5)
+            if k == 68:
+                  self.auto1.setRotation(self.auto1.rotation()+5)
+                  
