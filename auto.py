@@ -13,7 +13,11 @@ class auto(QGraphicsPixmapItem):
             self.Actions.append( self.menu.addAction("Eliminar") )
             self.menu.triggered[QAction].connect(self.test)
       def test(self,act):
-          print act.text()
+            print act.text()
       def contextMenuEvent(self,event):
-        self.menu.popup(event.screenPos())
+            self.menu.popup(event.screenPos())
+      def mousePressEvent(self, event):
+            print event
+      def mouseMoveEvent(self, event):
+            self.setPos(event.scenePos())
 
