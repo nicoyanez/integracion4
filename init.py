@@ -7,7 +7,7 @@ class MainWindow(QtGui.QMainWindow):
       def __init__(self, parent=None):
             QtGui.QMainWindow.__init__(self, parent)
             self.setWindowTitle('Mi ventana')
-            self.resize(600, 400)
+            self.resize(900, 600)
             self.statusBar().showMessage("Listo")
             self.contenedir = QtGui.QVBoxLayout()
             self.w = escena()

@@ -2,13 +2,16 @@ from PyQt4 import QtGui
 from PyQt4 import QtCore
 from PyQt4.QtGui import QPushButton , QIcon
 from auto import *
+from calle import *
+from bandejon import *
+from centro import *
 
 class escena(QtGui.QWidget):
       def __init__(self, *args):
             QtGui.QWidget.__init__(self, *args)
             self.layout = QtGui.QVBoxLayout()
             self.setLayout(self.layout)
-            self.resize(600, 400)
+            self.resize(900, 600)
             self.setAcceptDrops(True)
 
             ##escena
@@ -22,14 +25,29 @@ class escena(QtGui.QWidget):
             self.view.wheelEvent = self.viewWeelEvent
             self.view.dragEnterEvent = self.dragEnterEvent            
             self.view.setScene(self.scene)
-            self.view.setGeometry(QtCore.QRect(0, 0, self.rect().width(), self.rect().height()))
+            self.view.setGeometry(QtCore.QRect(0, 0, self.rect().width()-100, self.rect().height()-40))
 
             ##
             self.auto1 = auto()
             self.auto1.setPos(100.0,150.0)
             self.auto1.setRotation(45)
             self.scene.addItem(self.auto1)
-            self.auto1.setTransformOriginPoint(self.auto1.boundingRect().width()/2.0,self.auto1.boundingRect().height()/2.0)
+            
+
+            ##calle
+            c1 = calle()
+            c1.setPos(200,200)
+            self.scene.addItem(c1)
+
+            ##central
+            q1 = centro()
+            q1.setPos(100,200)
+            self.scene.addItem(q1)
+
+            ##bandejon
+            b1 = bandejon()
+            b1.setPos(200,300)
+            self.scene.addItem(b1)
             
             ##toolbar
             self.tb = QtGui.QToolBar("mi br",self)
@@ -44,9 +62,9 @@ class escena(QtGui.QWidget):
       def resizeEvent(self,event):
             #print self.rect()
             self.tb.setFixedSize(self.rect().width(),40)
-            self.scene.setSceneRect(0,0,self.rect().width(),self.rect().height())
+            self.scene.setSceneRect(0,0,self.rect().width(),self.rect().height()-40)
             #self.view.setSceneRect(0,0,self.rect().width(),self.rect().height())
-            self.view.setGeometry(QtCore.QRect(0, 0, self.rect().width(), self.rect().height()))
+            self.view.setGeometry(QtCore.QRect(0, 40, self.rect().width(), self.rect().height()-40))
       def dragMoveEvent(self,e):
             #print e
             None
