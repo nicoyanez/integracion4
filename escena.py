@@ -27,13 +27,13 @@ class escena(QtGui.QWidget):
             self.view.setScene(self.scene)
             self.view.setGeometry(QtCore.QRect(0, 0, self.rect().width()-100, self.rect().height()-40))
 
+            ##escenario por defecto 
             ##
             self.auto1 = auto()
             self.auto1.setPos(100.0,150.0)
             self.auto1.setRotation(45)
             self.scene.addItem(self.auto1)
             
-
             ##calle
             c1 = calle()
             c1.setPos(200,200)
