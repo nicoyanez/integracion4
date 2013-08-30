@@ -28,6 +28,7 @@ class auto(QGraphicsPixmapItem):
             poligono.append(QPointF(-30,-10))
             self.vision = QGraphicsPolygonItem(poligono,self,self.scene())
             self.vision.setBrush(QColor(255, 255, 0,100))
+            self.vision.setPen(QColor(255, 255, 0))
 
       def test(self,act):
             print act.text()
