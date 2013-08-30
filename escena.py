@@ -2,9 +2,9 @@ from PyQt4 import QtGui
 from PyQt4 import QtCore
 from PyQt4.QtGui import QPushButton , QIcon
 from auto import *
-from calle import *
-from bandejon import *
-from centro import *
+from calle2 import *
+from bandejon2 import *
+from centro2 import *
 
 class escena(QtGui.QWidget):
       def __init__(self, *args):
