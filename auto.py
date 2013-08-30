@@ -1,4 +1,4 @@
-from PyQt4.QtGui import QGraphicsPixmapItem ,QPixmap ,QAction ,QMenu
+from PyQt4.QtGui import QGraphicsPixmapItem ,QPixmap ,QAction ,QMenu ,QGraphicsPolygonItem , QPolygonF  , QColor
 from PyQt4.QtCore import QPointF
 import random
 
@@ -8,6 +8,7 @@ class auto(QGraphicsPixmapItem):
             self.setPixmap(QPixmap("sprites/"+str(random.randint(1,45))+".png"))
             self.setTransformOriginPoint(self.boundingRect().width()/2.0,self.boundingRect().height()/2.0)
             self.setZValue(10)
+            ##menu contextual
             self.menu = QMenu()
             self.Actions =[] #arreglo de acciones 
             self.Actions.append( self.menu.addAction("Seguir") )
@@ -16,11 +17,22 @@ class auto(QGraphicsPixmapItem):
             self.Actions.append( self.menu.addAction("Duplicar") )
             self.Actions.append( self.menu.addAction("Eliminar") )
             self.menu.triggered[QAction].connect(self.test)
+            ##offset para el arrastre
             self.offset= QPointF(0,0)
+            ##poligono de vision
+            poligono = QPolygonF()
+            poligono.append(QPointF(-1,10))
+            poligono.append(QPointF(-1,20))
+            poligono.append(QPointF(-30,40))
+            poligono.append(QPointF(-40,15))
+            poligono.append(QPointF(-30,-10))
+            self.vision = QGraphicsPolygonItem(poligono,self,self.scene())
+            self.vision.setBrush(QColor(255, 255, 0,100))
+
       def test(self,act):
             print act.text()
             if act.text()=="Colisiones":
-                  print "colisiones con",self.collidingItems(1)
+                  print "colisiones con",self.collidingItems(1),self.vision.collidingItems(1)
             if act.text()=="Duplicar":
                   self.scene().addItem(auto())
             if act.text()=="Eliminar":

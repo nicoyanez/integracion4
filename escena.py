@@ -1,10 +1,10 @@
 from PyQt4 import QtGui
 from PyQt4 import QtCore
-from PyQt4.QtGui import QPushButton , QIcon
+from PyQt4.QtGui import QPushButton , QIcon , QComboBox , QLabel
 from auto import *
-from calle2 import *
-from bandejon2 import *
-from centro2 import *
+from calle import *
+from bandejon import *
+from centro import *
 
 class escena(QtGui.QWidget):
       def __init__(self, *args):
@@ -52,9 +52,18 @@ class escena(QtGui.QWidget):
             ##toolbar
             self.tb = QtGui.QToolBar("mi br",self)
             self.tb.setFixedSize(self.rect().width(),40)
+            #boton play
             self.play = QPushButton(QIcon("icons/play.png"),"")
             self.tb.addWidget(self.play)
-
+            ##combo de escenarios predefinidos
+            self.tb.addSeparator()
+            self.tb.addWidget(QLabel("Cargar escenario"))
+            combo = QComboBox()
+            combo.addItems(["Scene #1","Scene #2","Scene #3"])
+            combo.currentIndexChanged[int].connect(self.cambiaEscenario)
+            self.tb.addWidget(combo)
+      def cambiaEscenario(self,num):
+            print "se carga el escenario",num
       def viewWeelEvent(self,event):
             None
       def imprime(self,event):
