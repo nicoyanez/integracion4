@@ -5,6 +5,7 @@ from auto import *
 from calle import *
 from bandejon import *
 from centro import *
+from semaforo import *
 
 class escena(QtGui.QWidget):
       def __init__(self, *args):
@@ -48,6 +49,11 @@ class escena(QtGui.QWidget):
             b1 = bandejon()
             b1.setPos(200,300)
             self.scene.addItem(b1)
+
+            ##semaforo
+            s1 = semaforo()
+            s1.setPos(200,200)
+            self.scene.addItem(s1)
             
             ##toolbar
             self.tb = QtGui.QToolBar("mi br",self)
