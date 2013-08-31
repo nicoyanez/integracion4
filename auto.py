@@ -13,6 +13,8 @@ class auto(QGraphicsPixmapItem):
             self.Actions =[] #arreglo de acciones 
             self.Actions.append( self.menu.addAction("Seguir") )
             self.Actions.append( self.menu.addAction("Editar") )
+            self.Actions.append( self.menu.addAction("girar clockwise") )
+            self.Actions.append( self.menu.addAction("girar anti-clockwise") )
             self.Actions.append( self.menu.addAction("Colisiones") )
             self.Actions.append( self.menu.addAction("Duplicar") )
             self.Actions.append( self.menu.addAction("Eliminar") )
@@ -32,6 +34,10 @@ class auto(QGraphicsPixmapItem):
 
       def test(self,act):
             print act.text()
+            if act.text()=="girar clockwise":
+                  self.setRotation(self.rotation()-45)
+            if act.text()=="girar anti-clockwise":
+                  self.setRotation(self.rotation()+45)
             if act.text()=="Colisiones":
                   print "colisiones con",self.collidingItems(1),self.vision.collidingItems(1)
             if act.text()=="Duplicar":
