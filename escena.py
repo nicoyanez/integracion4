@@ -6,6 +6,8 @@ from calle import *
 from bandejon import *
 from centro import *
 from semaforo import *
+from cpaso import *
+from pare import *
 from sys import *
 class escena(QtGui.QWidget):
       def __init__(self, *args):
@@ -148,6 +150,13 @@ class escena(QtGui.QWidget):
             s1 = semaforo()
             s1.setPos(200,200)
             self.scene.addItem(s1)
+
+            ##pare
+            p1= pare()
+            self.scene.addItem(p1)
+            ##ceda el paso 
+            cp1 = cpaso()
+            self.scene.addItem(cp1)
             
             ##toolbar
             self.tb = QtGui.QToolBar("mi br",self)
