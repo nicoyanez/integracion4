@@ -1,6 +1,8 @@
 from PyQt4 import QtGui
 from PyQt4 import QtCore
-from PyQt4.QtGui import QPushButton , QIcon , QComboBox , QLabel
+from PyQt4.QtGui import QPushButton , QIcon , QComboBox , QLabel , QDialog , QVBoxLayout ,QLineEdit
+from PyQt4.QtCore import QStringList , QString
+import sqlite3
 from auto import *
 from calle import *
 from bandejon import *
@@ -9,6 +11,9 @@ from semaforo import *
 from cpaso import *
 from pare import *
 from sys import *
+
+objetos = {"auto":auto,"bandejon":bandejon,"calle":calle,"centro":centro,"cpaso":cpaso,"semaforo":semaforo,"pare":pare}
+
 class escena(QtGui.QWidget):
       def __init__(self, *args):
             QtGui.QWidget.__init__(self, *args)
@@ -168,11 +173,84 @@ class escena(QtGui.QWidget):
             self.tb.addSeparator()
             self.tb.addWidget(QLabel("Cargar escenario"))
             combo = QComboBox()
-            combo.addItems(["Scene #1","Scene #2","Scene #3"])
-            combo.currentIndexChanged[int].connect(self.cambiaEscenario)
+            tablas = self.cargaTablas()
+            combo.addItems(tablas)
+            #combo = QComboBox()
+            #combo.addItems(["Scene #1","Scene #2","Scene #3"])
+            combo.currentIndexChanged[QString].connect(self.cambiaEscenario)
             self.tb.addWidget(combo)
-      def cambiaEscenario(self,num):
-            print "se carga el escenario",num
+            ##boton de guardar escenario
+            self.tb.addSeparator()
+            bge = QPushButton("Guardar")
+            self.tb.addWidget(bge)
+            bge.clicked.connect(self.guardaEscenario)
+            acepta = QPushButton("Aceptar")
+            acepta.clicked.connect(self.aceptar)
+            self.dialogo = QDialog()
+            layout = QVBoxLayout()
+            self.name = QLineEdit("Mi Escenario #1")
+            layout.addWidget(self.name)
+            layout.addWidget(acepta)
+            self.dialogo.setLayout(layout)
+      def cargaTablas(self):
+            temp = QStringList("Elija Una Fuente")
+            connection = None
+            try:
+                  connection =  sqlite3.connect("escenarios.db")
+                  cursor = connection.cursor()
+                  cursor.execute("SELECT name FROM escenario")
+                  data = cursor.fetchall()
+                  for row in data:
+                        temp.append(row[0])
+            except sqlite3.Error , e:
+                  print "Error %s:" % e.args[0]
+                  if connection:
+                        connection.close()
+            return temp
+      def aceptar(self):
+            self.dialogo.accept()
+      def guardaEscenario(self):
+            connection = None
+            id_escenario = 0
+            if self.dialogo.exec_():
+                  try:
+                      connection =  sqlite3.connect("escenarios.db")
+                      cursor = connection.cursor()
+                      cursor.execute("insert into escenario (name) values (?)",[str(self.name.text())])
+                      connection.commit()
+                      id_escenario = cursor.lastrowid
+                      for item in self.scene.items():
+                            if item.__class__.__name__!="QGraphicsPolygonItem":
+                                  print item.__class__.__name__
+                                  #item.__class__.__name__,item.pos().x(),":",item.pos().y(),":",item.rotation()
+                                  cursor.execute("insert into posiciones (escenario_id,objeto_id,x,y,angle) values (?,(select id from objetos where name=? ),?,?,?) ",[id_escenario,item.__class__.__name__,item.pos().x(),item.pos().y(),item.rotation()])
+                      connection.commit()
+                  except sqlite3.Error , e:
+                      print "Error %s:" % e.args[0]
+                  if connection:
+                      connection.close()
+                  print "se guardaran los cambios"
+            else:
+                  print "no se guarda nada"
+      def cambiaEscenario(self,name):
+            self.scene.clear()
+            print "se carga el escenario",name
+            try:
+                  connection =  sqlite3.connect("escenarios.db")
+                  cursor = connection.cursor()
+                  cursor.execute("select objetos.name,posiciones.x,posiciones.y,posiciones.angle from posiciones inner join objetos on objetos.id = posiciones.objeto_id where escenario_id = (select id from escenario where name= ?)",[str(name)])
+                  #connection.commit()
+                  data = cursor.fetchall()
+                  for row in data:
+                        print row
+                        temp = objetos[row[0]]()
+                        temp.setPos(row[1],row[2])
+                        temp.setRotation(row[3])
+                        self.scene.addItem(temp)
+            except sqlite3.Error , e:
+                  print "Error %s:" % e.args[0]
+            if connection:
+                  connection.close()
       def viewWeelEvent(self,event):
             None
       def imprime(self,event):
