@@ -17,20 +17,24 @@ class simulador(QtCore.QThread):
         self.mutex = QtCore.QMutex()
         self.start()
     def run(self):
-        time.sleep(0.1)
-        self.mutex.lock()
-        objetos = self.escena.scene.items()
-        #autos   = [i.avanza() for i in objetos if i.__class__.__name__=="auto" ]
-        for i in objetos:
-            if i.__class__.__name__=="auto":
-                i.avanza()
-                """for j in i.collidingItems():
-                    if i.velocity !=0 and ( j.__class__.__name__=="auto" or  j.__class__.__name__=="bandejon" ):
-                        i.velocity = 0
-                        j.velocity=0 """
-        self.mutex.unlock()
-        QtCore.QObject.emit(self.escena,SIGNAL("RDY"),"SIMULATION READY MY FRIEND")
-        print "senal enviada"
+        while 1:
+            temp = ""
+            time.sleep(0.1)
+            self.mutex.lock()
+            objetos = self.escena.scene.items()
+            #autos   = [i.avanza() for i in objetos if i.__class__.__name__=="auto" ]
+            for i in objetos:
+                if i.__class__.__name__=="auto":
+                    i.avanza()
+                    if i.seleccionado:
+                        temp+=i.info()
+                    """for j in i.collidingItems():
+                        if i.velocity !=0 and ( j.__class__.__name__=="auto" or  j.__class__.__name__=="bandejon" ):
+                            i.velocity = 0
+                            j.velocity=0 """
+            self.mutex.unlock()
+            QtCore.QObject.emit(self.escena,SIGNAL("RDY"),("SIMULATION READY MY FRIEND\n"+temp))
+            print "senal enviada"
         self.terminate()
 def simula(escena):
     hilos.append( simulador(escena) )

@@ -1,7 +1,7 @@
 from PyQt4 import QtGui
 from PyQt4 import QtCore
-from PyQt4.QtGui import QPushButton , QIcon , QComboBox , QLabel , QDialog , QVBoxLayout ,QLineEdit
-from PyQt4.QtCore import QStringList , QString
+from PyQt4.QtGui import QPushButton , QIcon , QComboBox , QLabel , QDialog , QVBoxLayout ,QLineEdit , QHBoxLayout , QBoxLayout ,QTextEdit
+from PyQt4.QtCore import QStringList , QString , QRect
 import sqlite3
 from auto import *
 from calle import *
@@ -202,12 +202,33 @@ class escena(QtGui.QWidget):
             QtCore.QObject.connect(self, QtCore.SIGNAL('RDY'), self.repinta)
             self.simulando = False
             self.simulaciones = []
+            """
+            self.visorItems = [
+                QLabel("Velocidad"),
+                QLineEdit("00",self),
+                QLabel("x"),
+                QLineEdit("00",self),
+                QLabel("y")
+            ]
+            layoutb = QBoxLayout(QBoxLayout.LeftToRight,self)
+            layoutb.addChildWidget (self.visorItems[0])
+            layoutb.addChildWidget (self.visorItems[1])
+            layoutb.addChildWidget (self.visorItems[2])
+            layoutb.addChildWidget (self.visorItems[3])
+            layoutb.addChildWidget (self.visorItems[4])
+            self.layout.addChildLayout(layoutb)"""
+            self.info = QTextEdit(self)
+            self.info.setGeometry(0,self.rect().height()-40,self.rect().width(),40)
+            
       def repinta(self,arg):
           print "repintado"
-          if self.simulando:
+          self.scene.update()
+          self.repaint()
+          self.info.setText(arg)
+          """if self.simulando:
               self.scene.update()
-              self.repaint()
-              self.simulaciones.append( simula(self) )
+              self.repaint()"""
+              #self.simulaciones.append( simula(self) )
               
       def iniciaSimulacion(self):
           print "iniciaodo simulacion"
@@ -216,6 +237,7 @@ class escena(QtGui.QWidget):
       def pausaSimulacion(self):
           print "pausa simulacion"
           self.simulando = False
+          hilos[-1].terminate()
       def cargaTablas(self):
             temp = QStringList("Elija Una Fuente")
             connection = None
@@ -293,6 +315,7 @@ class escena(QtGui.QWidget):
             self.scene.setSceneRect(0,0,self.rect().width(),self.rect().height()-40)
             #self.view.setSceneRect(0,0,self.rect().width(),self.rect().height())
             self.view.setGeometry(QtCore.QRect(0, 40, self.rect().width(), self.rect().height()-40))
+            self.info.setGeometry(0,self.rect().height()-40,self.rect().width(),40)
       def dragMoveEvent(self,e):
             #print e
             None

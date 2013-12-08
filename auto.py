@@ -4,6 +4,7 @@ import random
 from math import sin,cos
 class auto(QGraphicsPixmapItem):
       def __init__(self, *args):
+            self.seleccionado = False
             self.velocity = random.randint(1,10)
             QGraphicsPixmapItem.__init__(self, *args)
             self.setPixmap(QPixmap("sprites/"+str(random.randint(1,45))+".png"))
@@ -32,7 +33,8 @@ class auto(QGraphicsPixmapItem):
             self.vision = QGraphicsPolygonItem(poligono,self,self.scene())
             self.vision.setBrush(QColor(255, 255, 0,100))
             self.vision.setPen(QColor(255, 255, 0))
-
+      def info(self):
+          return "Velocidad "+ str(self.velocity)+" posicion "+ str(self.pos())[20:]+"\n"
       def test(self,act):
             print act.text()
             if act.text()=="girar clockwise":
@@ -50,6 +52,7 @@ class auto(QGraphicsPixmapItem):
       def mousePressEvent(self, event):
             p = event.pos()
             self.offset= QPointF(p.x()*1.0,p.y()*1.0)
+            self.seleccionado = not self.seleccionado
       def mouseMoveEvent(self, event):
             self.setPos(event.scenePos()-self.offset)
       def avanza(self):
