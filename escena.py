@@ -11,7 +11,7 @@ from semaforo import *
 from cpaso import *
 from pare import *
 from sys import *
-from simulador import *
+from simulador2 import *
 
 objetos = {"auto":auto,"bandejon":bandejon,"calle":calle,"centro":centro,"cpaso":cpaso,"semaforo":semaforo,"pare":pare}
 
@@ -201,11 +201,13 @@ class escena(QtGui.QWidget):
             self.dialogo.setLayout(layout)
             QtCore.QObject.connect(self, QtCore.SIGNAL('RDY'), self.repinta)
             self.simulando = False
+            self.simulaciones = []
       def repinta(self,arg):
           print "repintado"
           if self.simulando:
               self.scene.update()
-              simula(self)
+              self.repaint()
+              self.simulaciones.append( simula(self) )
               
       def iniciaSimulacion(self):
           print "iniciaodo simulacion"

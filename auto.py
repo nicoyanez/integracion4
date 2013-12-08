@@ -52,21 +52,20 @@ class auto(QGraphicsPixmapItem):
             self.offset= QPointF(p.x()*1.0,p.y()*1.0)
       def mouseMoveEvent(self, event):
             self.setPos(event.scenePos()-self.offset)
-      def avanza(self,velocity):
+      def avanza(self):
           if self.velocity !=0:
               """print velocity
               print "current pos (%f,%f)"%(self.pos().x(),self.pos().y())
               print "angle %f "%(self.rotation())"""
               radians = self.rotation()*0.0174532925
               """ print "angle rad %f "%(radians)"""
-              nx = 1.0*velocity*cos(radians)
-              ny = 1.0*velocity*sin(radians)
+              nx = 1.0*self.velocity*cos(radians)
+              ny = 1.0*self.velocity*sin(radians)
               """ print "avanzara a (%f,%f)"%(nx,ny) """
               self.setPos(self.pos().x()-nx,self.pos().y()-ny)
-              for i in self.collidingItems():
+              """ for i in self.collidingItems():
                   if self.velocity !=0 and i.__class__.__name__=="auto":
                       print "choque"
                       self.velocity = 0
-                      i.velocity=0
-          
+                      i.velocity=0 """
 
