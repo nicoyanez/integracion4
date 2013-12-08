@@ -32,6 +32,7 @@ class abstractPixmapScene(QGraphicsPixmapItem):
             self.offset= QPointF(p.x()*1.0,p.y()*1.0)
       def mouseMoveEvent(self, event):
             self.setPos(event.scenePos()-self.offset)
+            self.scene().update()
       def duplicame(self):
             print "duplicando"
 

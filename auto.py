@@ -1,9 +1,10 @@
 from PyQt4.QtGui import QGraphicsPixmapItem ,QPixmap ,QAction ,QMenu ,QGraphicsPolygonItem , QPolygonF  , QColor
 from PyQt4.QtCore import QPointF
 import random
-
+from math import sin,cos
 class auto(QGraphicsPixmapItem):
       def __init__(self, *args):
+            self.velocity = random.randint(1,10)
             QGraphicsPixmapItem.__init__(self, *args)
             self.setPixmap(QPixmap("sprites/"+str(random.randint(1,45))+".png"))
             self.setTransformOriginPoint(self.boundingRect().width()/2.0,self.boundingRect().height()/2.0)
@@ -51,4 +52,21 @@ class auto(QGraphicsPixmapItem):
             self.offset= QPointF(p.x()*1.0,p.y()*1.0)
       def mouseMoveEvent(self, event):
             self.setPos(event.scenePos()-self.offset)
+      def avanza(self,velocity):
+          if self.velocity !=0:
+              """print velocity
+              print "current pos (%f,%f)"%(self.pos().x(),self.pos().y())
+              print "angle %f "%(self.rotation())"""
+              radians = self.rotation()*0.0174532925
+              """ print "angle rad %f "%(radians)"""
+              nx = 1.0*velocity*cos(radians)
+              ny = 1.0*velocity*sin(radians)
+              """ print "avanzara a (%f,%f)"%(nx,ny) """
+              self.setPos(self.pos().x()-nx,self.pos().y()-ny)
+              for i in self.collidingItems():
+                  if self.velocity !=0 and i.__class__.__name__=="auto":
+                      print "choque"
+                      self.velocity = 0
+                      i.velocity=0
+          
 

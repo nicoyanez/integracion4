@@ -11,6 +11,7 @@ from semaforo import *
 from cpaso import *
 from pare import *
 from sys import *
+from simulador import *
 
 objetos = {"auto":auto,"bandejon":bandejon,"calle":calle,"centro":centro,"cpaso":cpaso,"semaforo":semaforo,"pare":pare}
 
@@ -21,6 +22,7 @@ class escena(QtGui.QWidget):
             self.setLayout(self.layout)
             self.resize(900, 600)
             self.setAcceptDrops(True)
+
 
             ##escena
             self.scene = QtGui.QGraphicsScene(0,0,self.rect().width(),self.rect().height())
@@ -169,16 +171,21 @@ class escena(QtGui.QWidget):
             #boton play
             self.play = QPushButton(QIcon("icons/play.png"),"")
             self.tb.addWidget(self.play)
+            self.play.clicked.connect(self.iniciaSimulacion)
+            #boton pausa
+            self.pausa = QPushButton(QIcon("icons/pause.png"),"")
+            self.tb.addWidget(self.pausa)
+            self.pausa.clicked.connect(self.pausaSimulacion)
             ##combo de escenarios predefinidos
             self.tb.addSeparator()
             self.tb.addWidget(QLabel("Cargar escenario"))
-            combo = QComboBox()
+            self.combo = QComboBox()
             tablas = self.cargaTablas()
-            combo.addItems(tablas)
+            self.combo.addItems(tablas)
             #combo = QComboBox()
             #combo.addItems(["Scene #1","Scene #2","Scene #3"])
-            combo.currentIndexChanged[QString].connect(self.cambiaEscenario)
-            self.tb.addWidget(combo)
+            self.combo.currentIndexChanged[QString].connect(self.cambiaEscenario)
+            self.tb.addWidget(self.combo)
             ##boton de guardar escenario
             self.tb.addSeparator()
             bge = QPushButton("Guardar")
@@ -192,6 +199,21 @@ class escena(QtGui.QWidget):
             layout.addWidget(self.name)
             layout.addWidget(acepta)
             self.dialogo.setLayout(layout)
+            QtCore.QObject.connect(self, QtCore.SIGNAL('RDY'), self.repinta)
+            self.simulando = False
+      def repinta(self,arg):
+          print "repintado"
+          if self.simulando:
+              self.scene.update()
+              simula(self)
+              
+      def iniciaSimulacion(self):
+          print "iniciaodo simulacion"
+          self.simulando = True
+          simula(self)
+      def pausaSimulacion(self):
+          print "pausa simulacion"
+          self.simulando = False
       def cargaTablas(self):
             temp = QStringList("Elija Una Fuente")
             connection = None
@@ -202,6 +224,7 @@ class escena(QtGui.QWidget):
                   data = cursor.fetchall()
                   for row in data:
                         temp.append(row[0])
+                        #print row[0]
             except sqlite3.Error , e:
                   print "Error %s:" % e.args[0]
                   if connection:
@@ -221,15 +244,21 @@ class escena(QtGui.QWidget):
                       id_escenario = cursor.lastrowid
                       for item in self.scene.items():
                             if item.__class__.__name__!="QGraphicsPolygonItem":
-                                  print item.__class__.__name__
+                                  #print item.__class__.__name__
                                   #item.__class__.__name__,item.pos().x(),":",item.pos().y(),":",item.rotation()
                                   cursor.execute("insert into posiciones (escenario_id,objeto_id,x,y,angle) values (?,(select id from objetos where name=? ),?,?,?) ",[id_escenario,item.__class__.__name__,item.pos().x(),item.pos().y(),item.rotation()])
                       connection.commit()
+                      id_escenario = cursor.lastrowid
                   except sqlite3.Error , e:
                       print "Error %s:" % e.args[0]
                   if connection:
                       connection.close()
                   print "se guardaran los cambios"
+                  tablas = self.cargaTablas()
+                  self.combo.clear()
+                  self.combo.addItems(tablas)
+                  self.combo.setCurrentIndex(len(tablas)-1)
+                  print "se actualizo el combo"
             else:
                   print "no se guarda nada"
       def cambiaEscenario(self,name):
@@ -242,11 +271,12 @@ class escena(QtGui.QWidget):
                   #connection.commit()
                   data = cursor.fetchall()
                   for row in data:
-                        print row
+                        #print row
                         temp = objetos[row[0]]()
                         temp.setPos(row[1],row[2])
                         temp.setRotation(row[3])
                         self.scene.addItem(temp)
+                  self.scene.update()
             except sqlite3.Error , e:
                   print "Error %s:" % e.args[0]
             if connection:
