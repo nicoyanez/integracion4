@@ -66,9 +66,9 @@ class auto(QGraphicsPixmapItem):
               ny = 1.0*self.velocity*sin(radians)
               """ print "avanzara a (%f,%f)"%(nx,ny) """
               self.setPos(self.pos().x()-nx,self.pos().y()-ny)
-              """ for i in self.collidingItems():
+              """for i in self.collidingItems():
                   if self.velocity !=0 and i.__class__.__name__=="auto":
-                      print "choque"
+                      #print "choque"
                       self.velocity = 0
-                      i.velocity=0 """
+                      break """
 

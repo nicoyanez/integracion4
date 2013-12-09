@@ -3,6 +3,8 @@ from escena import *
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 import sys
+
+
 class MainWindow(QtGui.QMainWindow):
       def __init__(self, parent=None):
             QtGui.QMainWindow.__init__(self, parent)

@@ -221,10 +221,15 @@ class escena(QtGui.QWidget):
             self.info.setGeometry(0,self.rect().height()-40,self.rect().width(),40)
             
       def repinta(self,arg):
-          print "repintado"
+          mutex.lock()
+          print "repintado1"
           self.scene.update()
-          self.repaint()
+          print "repintado2"
+          #self.repaint()
+          print "repintado3"
           self.info.setText(arg)
+          print "repintado4"
+          mutex.unlock()
           """if self.simulando:
               self.scene.update()
               self.repaint()"""
